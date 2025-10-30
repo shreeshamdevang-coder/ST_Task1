@@ -1,0 +1,38 @@
+from PIL import Image
+import random
+
+def encrypt_image(img_path, key):
+    img = Image.open(img_path)
+    img = img.convert('RGB')
+    pixels = img.load()
+    width, height = img.size
+
+    
+    for x in range(width):
+        for y in range(height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = (r ^ key, g ^ key, b ^ key)
+
+    
+    for _ in range((width * height) // 10):  
+        x1, y1 = random.randint(0, width - 1), random.randint(0, height - 1)
+        x2, y2 = random.randint(0, width - 1), random.randint(0, height - 1)
+        pixels[x1, y1], pixels[x2, y2] = pixels[x2, y2], pixels[x1, y1]
+
+    img.save('encrypted_image.png')
+    print("Encryption complete. Saved as encrypted_image.png")
+
+def decrypt_image(img_path, key):
+    img = Image.open(img_path)
+    img = img.convert('RGB')
+    pixels = img.load()
+    width, height = img.size
+
+    
+    for x in range(width):
+        for y in range(height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = (r ^ key, g ^ key, b ^ key)
+
+    img.save('decrypted_image.png')
+    print("Decryption (XOR only) complete. Saved as decrypted_image.png")
